@@ -5,123 +5,161 @@ import java.util.List;
 import java.util.Stack;
 
 class Baum<T extends Comparable<T>> {
-	private class Element {
-		T value;
-		Element left, right;
-		Element(T value) { this.value = value; }
-	}
+    private class Element {
+        T value;
+        Element left, right;
 
-	private Element root;
+        Element(T value) {
+            this.value = value;
+        }
 
-	/**
-	 * Fügt ein Element in den Baum ein.
-	 */
-	void add(T value) {
-		if (root == null) {
-			root = new Element(value);
-			return;
-		}
+        void insert(T value) {
+            int c = value.compareTo(this.value);
+            if (c == 0)
+                return;
+            else if (c < 0) {
+                if (left == null)
+                    left = new Element(value);
+                else
+                    left.insert(value);
+            } else {
+                if (right == null)
+                    right = new Element(value);
+                else
+                    right.insert(value);
+            }
+        }
 
-		Element it = root;
-		while (it != null) {
-			int c = it.value.compareTo(value);
+        boolean contains(T value){
+            int c = value.compareTo(this.value);
+            if(c == 0)
+                return true;
+            else if (c < 0 && left != null)
+                return left.contains(value);
+            else if(c > 0 && right != null)
+                return right.contains(value);
+            else
+                return false;
+        }
+    }
 
-			if (c == 0)
-				return;
-			else if (c < 0) {
-				if (it.left == null) {
-					it.left = new Element(value);
-					return;
-				} else {
-					it = it.left;
-				}
-			} else {
-				if (it.right == null) {
-					it.right = new Element(value);
-					return;
-				} else {
-					it = it.right;
-				}
-			}
-		}
-	}
+    private Element root;
 
-	/**
-	 *  Wie `add`, aber rekursiv zu implementieren.
-	 */
-	void addRek(T value) {
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * Fügt ein Element in den Baum ein.
+     */
+    void add(T value) {
+        if (root == null) {
+            root = new Element(value);
+            return;
+        }
 
-	/**
-	 * Gibt `true` zurück, wenn der Wert `value` im Baum enthalten ist.
-	 */
-	boolean contains(T value) {
-		if (root == null)
-			return false;
+        Element it = root;
+        while (it != null) {
+            int c = it.value.compareTo(value);
 
-		Element it = root;
-		while (it != null) {
-			int c = it.value.compareTo(value);
-			if (c == 0)
-				return true;
-			else if (c < 0)
-				it = it.left;
-			else
-				it = it.right;
-		}
+            if (c == 0)
+                return;
+            else if (c < 0) {
+                if (it.left == null) {
+                    it.left = new Element(value);
+                    return;
+                } else {
+                    it = it.left;
+                }
+            } else {
+                if (it.right == null) {
+                    it.right = new Element(value);
+                    return;
+                } else {
+                    it = it.right;
+                }
+            }
+        }
+    }
 
-		return false;
-	}
+    /**
+     * Wie `add`, aber rekursiv zu implementieren.
+     */
+    void addRek(T value) {
+        if (root == null)
+            root = new Element(value);
+        else
+            root.insert(value);
+    }
 
-	/**
-	 * Wie `contains`, aber rekursiv zu implementieren.
-	 */
-	boolean containsRek(T value) {
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * Gibt `true` zurück, wenn der Wert `value` im Baum enthalten ist.
+     */
+    boolean contains(T value) {
+        if (root == null)
+            return false;
 
-	/**
-	 * Gibt eine Stringrepraesentation des Baums zurück, wobei das Format
-	 * eine aufsteigende sortierte Liste darstellt, z.B. [] oder [2, 3, 4].
-	 * Abstrakt betrachtet ist dies die sog. Infixschreibweise, bei der fuer
-	 * ein Element zuerst der linke Teilbaum, dann der Wert, dann der rechte
-	 * Tb. ausgegeben wird.
-	 */
-	public String toString() {
-		Stack<Element> agenda = new Stack<>();
+        Element it = root;
+        while (it != null) {
+            int c = value.compareTo(it.value);
+            if (c == 0)
+                return true;
+            else if (c < 0)
+                it = it.left;
+            else
+                it = it.right;
+        }
 
-		// Tiefenabstieg nach links
-		Element it = root;
-		while (it != null) {
-			agenda.push(it);
-			it = it.left;
-		}
+        return false;
+    }
 
-		StringBuilder sb = new StringBuilder();
+    /**
+     * Wie `contains`, aber rekursiv zu implementieren.
+     */
+    boolean containsRek(T value) {
+        if(root == null)
+            return false;
+        else
+            return root.contains(value);
+    }
 
-		while (!agenda.empty()) {
-			Element e = agenda.pop();
-			sb.append(e.value);
+    /**
+     * Gibt eine Stringrepraesentation des Baums zurück, wobei das Format
+     * eine aufsteigende sortierte Liste darstellt, z.B. [] oder [2, 3, 4].
+     * Abstrakt betrachtet ist dies die sog. Infixschreibweise, bei der fuer
+     * ein Element zuerst der linke Teilbaum, dann der Wert, dann der rechte
+     * Tb. ausgegeben wird.
+     */
+    public String toString() {
+        Stack<Element> agenda = new Stack<>();
 
-			// Tiefenabstieg nach links
-			it = e.right;
-			while (it != null) {
-				agenda.push(it);
-				it = it.left;
-			}
+        // Tiefenabstieg nach links
+        Element it = root;
+        while (it != null) {
+            agenda.push(it);
+            it = it.left;
+        }
 
-			if (agenda.size() > 0)
-				sb.append(", ");
-		}
+        StringBuilder sb = new StringBuilder();
 
-		return "[" + sb.toString() + "]";
-	}
+        while (!agenda.empty()) {
+            Element e = agenda.pop();
+            sb.append(e.value);
 
-	/**
-	 * Zusatzaufgabe: Wie `toString`, nur rekursiv zu implementieren.
-	 */
-	String toStringRek() {
-		throw new UnsupportedOperationException();
-	}
+            // Tiefenabstieg nach links
+            it = e.right;
+            while (it != null) {
+                agenda.push(it);
+                it = it.left;
+            }
+
+            if (agenda.size() > 0)
+                sb.append(", ");
+        }
+
+        return "[" + sb.toString() + "]";
+    }
+
+    /**
+     * Zusatzaufgabe: Wie `toString`, nur rekursiv zu implementieren.
+     */
+    String toStringRek() {
+        throw new UnsupportedOperationException();
+    }
 }
