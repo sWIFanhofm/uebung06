@@ -1,84 +1,107 @@
 package ueb06;
 
 class Liste<T> {
-	private class Element {
-		T value;
-		Element next;
-		Element(T value) { this.value = value; }
-	}
+    private class Element {
+        T value;
+        Element next;
 
-	private Element first;
+        Element(T value) {
+            this.value = value;
+        }
 
-	/**
-	 * Hängt ein Element hinten an die Liste an.
-	 */
-	void add(T value) {
-		if (first == null) {
-			first = new Element(value);
-			return;
-		}
+        void anfuegen(T value) {
+            if (next == null) {
+                next = new Element(value);
+            } else
+                next.anfuegen(value);
+        }
 
-		Element it = first;
-		while (it.next != null)
-			it = it.next;
+        boolean contains(T value){
+            if(this.value.equals(value))
+                return true;
+            else if(next == null)
+                return false;
+            else return next.contains(value);
+        }
+    }
 
-		it.next = new Element(value);
-	}
+    private Element first;
 
-	/**
-	 * Wie `add`, aber rekursiv zu implementieren.
-	 */
-	void addRek(T value) {
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * Hängt ein Element hinten an die Liste an.
+     */
+    void add(T value) {
+        if (first == null) {
+            first = new Element(value);
+            return;
+        }
 
-	/**
-	 * Gibt `true` zurück, wenn der Wert `value` in der Liste enthalten ist.
-	 */
-	boolean contains(T value) {
-		if (first == null)
-			return false;
-		Element it = first;
+        Element it = first;
+        while (it.next != null)
+            it = it.next;
 
-		while (it != null) {
-			if (it.value.equals(value))
-				return true;
-			it = it.next;
-		}
+        it.next = new Element(value);
+    }
 
-		return false;
-	}
+    /**
+     * Wie `add`, aber rekursiv zu implementieren.
+     */
+    void addRek(T value) {
+        if (first == null) {
+            first = new Element(value);
+        } else first.anfuegen(value);
+    }
 
-	/**
-	 * Wie `contains`, nur rekursiv zu implementieren.
-	 */
-	boolean containsRek(T value) {
-		throw new UnsupportedOperationException();
-	}
+    /**
+     * Gibt `true` zurück, wenn der Wert `value` in der Liste enthalten ist.
+     */
+    boolean contains(T value) {
+        if (first == null)
+            return false;
+        Element it = first;
 
-	/**
-	 * Gibt eine Stringrepraesentation der Liste zurück, z.B. [] oder [1, 2, 3]
-	 */
-	public String toString() {
-		if (first == null)
-			return "[]";
+        while (it != null) {
+            if (it.value.equals(value))
+                return true;
+            it = it.next;
+        }
 
-		StringBuilder sb = new StringBuilder();
-		sb.append(first.value);
+        return false;
+    }
 
-		Element it = first.next;
-		while (it != null) {
-			sb.append(", ").append(it.value);
-			it = it.next;
-		}
+    /**
+     * Wie `contains`, nur rekursiv zu implementieren.
+     */
+    boolean containsRek(T value) {
+        if(first == null)
+            return false;
+        else return first.contains(value);
+    }
 
-		return sb.toString();
-	}
+    /**
+     * Gibt eine Stringrepraesentation der Liste zurück, z.B. [] oder [1, 2, 3]
+     */
+    @Override
+    public String toString() {
+        if (first == null)
+            return "[]";
 
-	/**
-	 * Zusatzaufgabe: Wie `toString`, nur rekursiv zu implementieren.
-	 */
-	String toStringRek() {
-		throw new UnsupportedOperationException();
-	}
+        StringBuilder sb = new StringBuilder();
+        sb.append(first.value);
+
+        Element it = first.next;
+        while (it != null) {
+            sb.append(", ").append(it.value);
+            it = it.next;
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Zusatzaufgabe: Wie `toString`, nur rekursiv zu implementieren.
+     */
+    String toStringRek() {
+        throw new UnsupportedOperationException();
+    }
 }
